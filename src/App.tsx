@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.ts";
 
 import { ListCalculate } from "./components/List";
 import Register from "./components/Register";

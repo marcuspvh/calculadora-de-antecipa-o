@@ -19,36 +19,7 @@ code {
     monospace;
 }
 
-.App {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  /* flex-wrap: wrap; */
-  padding: 40px;
-  text-align: center;
-  background-color: #f2f2f2;
-  width: 608px;
-  height: 100%;
-  margin-top: 50px;
-}
 
-.section {
-  display: flex;
-  justify-content: space-around;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: center;
-  background-color: #ffffff;
-  width: auto;
-  height: auto;
-  /* background-color: aqua; */
-}
-/* .form{
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  background-color:#FD377E ;
-  width: 608px;
-  height: auto;
+
   
-} */
+

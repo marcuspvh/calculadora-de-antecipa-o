@@ -1,92 +1,43 @@
-import {createContext, ReactNode, useContext, useEffect,useState} from 'react';
-import { IRegister } from '../components/Register';
-
-
+import { createContext, ReactNode, useState } from "react";
+import { IRegister } from "../components/Register";
+import api from "../services/api";
 
 interface IAuthProviderProps {
-    children: ReactNode
+  children: ReactNode;
 }
-
-interface ICalculate {
-    valorVenda:number;
-    parcelas:number;
-    percentual: number;
-    valoresFuturos:number[]
-}
-
-
 
 interface IAuthContext {
-    registerValue(data: IRegister): void;
-    values: IRegister
-    Calculate(data: ICalculate): void;
-    valoresFuturos: number[];
+  values: IRegister;
+  setValues: (values: IRegister) => void;
+  calculate: (data: IRegister) => void;
 }
 
+export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
+const AuthProvider = ({ children }: IAuthProviderProps) => {
+  const [values, setValues] = useState<IRegister>({} as IRegister);
 
+  const calculate = async (data: IRegister) => {
+    try {
+      await api.post<IRegister>("", data).then((res) => {
+        setValues({ ...values, ...res.data });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-
-const AuthContext = createContext<IAuthContext>({} as IAuthContext);
-
-export const AuthProvider = ({children}:IAuthProviderProps) => {
-    const [values, setValues] = useState<IRegister>({} as IRegister)
-    
-    const [valoresFuturos, setValoresFuturos] = useState([]);
-
-
-    function registerValue(data: IRegister): void {
-    const newValue = data
-
-    setValues(newValue)
-    console.log(values)
-}
-
-const Calculate = (data: ICalculate):void => {
-    
-    let valorVenda = values.amount
-    let percentual = values.mdr
-    let parcelas = values.installments/30
-    
-    console.log(parcelas)
-
-    useEffect(() => {
-        const valorDiario = (valorVenda * (1 + (percentual / 100)) ** (parcelas));
-        
-        let newValoresFuturos = []
-        for (let i = 0; i < parcelas; i++) {
-            newValoresFuturos.push(valorDiario * (i+1));
-        }
-        setValoresFuturos(valoresFuturos);
-    }, [valorVenda, parcelas, percentual]);   
-    
+  return (
+    <AuthContext.Provider
+      value={{
+        setValues,
+        values,
+        calculate,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-
-  
- 
-      
-      console.log(valoresFuturos)
-
-    return(
-
-        < AuthContext.Provider value={
-            {
-                registerValue, 
-                values,
-                Calculate,
-                valoresFuturos
-            }}  >
-            {children}
-        </AuthContext.Provider>
-    )
-
-}
-
-
-
-export function useAuthContext():IAuthContext{
-    const context = useContext(AuthContext)
-
-    return context
-}
+export default AuthProvider;
